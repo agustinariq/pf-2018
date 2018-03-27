@@ -204,3 +204,44 @@ agrupar (x:xs) = let (ys:yss) = agrupar xs
 -- 5. undefined
 -- 6. undefined undefined
 ---- deberia terminar si undefined es un caso de error ??
+
+-- 6.Typeclasses
+-- 6.1.Prelude
+-- Describa el propósito de las siguientes typeclasses:
+-- Enum: define funciones que describen el comportamiento de tipos ordenables
+--       secuencialmente. Por ejemplo, define succ y pred.
+-- Ord: define funciones que describen el comportamiento de tipos ordenables
+--      comparativamente (?). Dados dos elementos de tipo ord, se puede saber
+--      cual es mas grande o mas chico de los dos utilizando operaciones como:
+--       >, >=, min, max, etc.
+-- Eq: define la igualdad y la desigualdad para los distintos tipos
+-- Bounded
+-- como que indica el minimo y em maximo de un tipo???
+-- Show
+-- convierte valores en string legibles.
+-- Read
+-- parsea string convirtiendolo en valores
+-- Num
+-- clase basica de numeros. Define suma, resta, valor absoluto, etc.
+--
+-- 6.2.Tipado
+-- Indicar el tipo y el resultado de las siguientes expresiones:
+-- 1. 5 :: Num a => a
+-- 2. 2.0 :: Fractional a => a
+-- 3. (5, 2.0) :: (Fractional a, Num b) => (b,a)
+-- 4. 5 + 2.0 :: Fractional a => a
+-- 5. minBound :: Bounded a => a
+-- 6. minBound && True :: Bool    !!!!
+-- 7. succ :: Enum a => a -> a
+-- 8. succ False :: Bool
+-- 9. succ True :: Bool
+-- 10. succ [] ::  no tipa ???
+-- 11. succ ’a’ :: Char
+-- 12. read "5" :: Read a => a
+-- 13. read "5" :: Int    ---> ::Int
+-- 14. let xs = [1,2,3] in xs :: Num a => [a]
+-- 15. Dado xs = [1,2,3] en un archivo, xs ??????? ???
+-- 6.3 Implementacion y uso
+--
+-- Lo dejo sin hacer.
+--
