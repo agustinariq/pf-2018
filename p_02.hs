@@ -138,9 +138,52 @@ span' p [] = ([],[])
 span' p (x:xs) = let (list1, list2) = span' p xs
                  in if p x
                     then (x : list1, list2)
-                    else (list1, xs)
+                    else ([], x : xs)
 
 break' p [] = ([],[])
+break' p (x:xs) = let (list1, list2) = break' p xs
+                 in if p x
+                    then ([], x : xs)
+                    else (x : list1, list2)
 
--- u) zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
--- v ) zipApply :: [(a -> b)] -> [a] -> [b]
+
+-- u)
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' f [] [] = []
+zipWith' f [] ys = []
+zipWith' f xs [] = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+-- v )
+zipApply :: [(a -> b)] -> [a] -> [b]
+zipApply fs xs = zipWith' ($) fs xs
+
+-- w )
+enumerate [] n = []
+enumerate (x:xs) n = (n, x) : enumerate xs (n + 1)
+
+index :: [a] -> [(Int,a)]
+index xs = enumerate xs 0
+
+-- x )
+applyN :: Int -> (a -> a) -> a -> a
+applyN 0 f x = x
+applyN 1 f x = f x
+applyN n f x = applyN (n-1) f (f x)
+
+-- y)
+-- iterate f x == [f x, f (f x), f (f (f x)), ...]
+iterate' :: (a -> a) -> a -> [a]
+iterate' f x = f x : iterate' f (f x)
+
+-- para probar: suma1 = (+) 1
+
+-- z )
+findIndex' :: (a -> Bool) -> [(Int,a)] -> Maybe' Int
+findIndex' f [] = Nothing'
+findIndex' f (x:xs) = if f (snd x)
+                then Just' (fst x)
+                else findIndex' f xs
+
+findIndex :: (a -> Bool) -> [a] -> Maybe' Int
+findIndex f xs = findIndex' f (index xs)
