@@ -12,8 +12,6 @@ map' f (x:xs) = f x : map' f xs
 -- 2.
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
 
-pal = (NodeT "miku" (NodeT "rin" (NodeT "len" EmptyT EmptyT) (NodeT "megpoid" EmptyT EmptyT)) (NodeT "luka" EmptyT EmptyT))
-
 mapT:: (a -> b) -> Tree a -> Tree b
 mapT f EmptyT = EmptyT
 mapT f (NodeT x t1 t2) = NodeT (f x) (mapT f t1) (mapT f t2)
@@ -21,16 +19,12 @@ mapT f (NodeT x t1 t2) = NodeT (f x) (mapT f t1) (mapT f t2)
 -- 3.
 data NonEmptyList a = Unit a | NECons a (NonEmptyList a)
 
-necons = NECons "miku" (NECons "luka" (Unit "rin"))
-
 mapNEL:: (a->b) -> NonEmptyList a -> NonEmptyList b
 mapNEL f (Unit x) = Unit (f x)
 mapNEL f (NECons x nel) = NECons (f x) (mapNEL f nel)
 
 -- 4.
 data AppendList a = Nil | Unitt a | Append (AppendList a) (AppendList a)
-
-al = Append (Append (Unitt "miku") (Unitt "rin")) Nil
 
 mapAL:: (a -> b) -> AppendList a -> AppendList b
 mapAL f Nil = Nil
@@ -255,7 +249,5 @@ anyMT f (B'' x mt1 mt2) = f x || anyMT f mt1 || anyMT f mt2
 
 allMT f (L' m) = allMaybe f m
 allMT f (B'' x mt1 mt2) = f x && allMT f mt1 && anyMT f mt2
-
--- ((>=4) . length) "jskajkasjd"
 
 -- 3. partition :: (a -> Bool) -> f a -> ([a], [a])
