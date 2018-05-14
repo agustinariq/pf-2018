@@ -163,4 +163,35 @@ findMT f (B'' x mt1 mt2) = if f x
                                  Nothing' -> findMT f mt2
 
 -- 2. any, all :: (a -> Bool) -> f a -> Bool
+
+any', all' :: (a -> Bool) -> [a] -> Bool
+
+any' f [] = False
+any' f (x:xs) = if f x
+               then True
+               else any' f xs
+
+all' f [] = True
+all' f (x:xs) = if f x
+               then True && all' f xs
+               else False
+
+anyNEL, allNEL :: (a -> Bool) -> NonEmptyList a -> Bool
+
+anyNEL f (Unit x) = if f x
+		    then True
+                    else False
+anyNEL f (NECons x nel) = if f x
+			  then True
+                          else anyNEL f nel
+
+anyNEL f (Unit x) = if f x
+		    then True
+                    else False
+anyNEL f (NECons x nel) = if f x
+			  then True && anyNEL f nel
+                          else False
+
+- ((>=4) . length) "jskajkasjd"
+	
 -- 3. partition :: (a -> Bool) -> f a -> ([a], [a])
