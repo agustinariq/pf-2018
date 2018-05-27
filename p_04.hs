@@ -355,20 +355,111 @@ subset' xs ys = foldr (\ x r -> elem x ys && r) True xs
 concat' :: [[a]] -> [a]
 concat' = foldr (\ x r -> x ++ r) []
 
---(!!!) :: [a] -> Int -> a
---(!!!) xs i = recr (\ x xs r ->)
+(!!!) :: [a] -> Int -> a
+(!!!) xs i = foldr buscarIndex (\ x -> error "No existe index") xs i
+                   where buscarIndex x r 0 = x
+                         buscarIndex x r n = r (n - 1)
 
--- take :: Int -> [a] -> [a]
--- drop :: Int -> [a] -> [a]
--- zip :: [a] -> [b] -> [(a,b)]
--- splitAt :: Int -> [a] -> ([a], [a])
--- maximum, minimum :: Ord a => [a] -> a
--- unzip :: [(a,b)] -> ([a],[b])
--- tails :: [a] -> [[a]]
--- nub :: (Eq a) => [a] -> [a]
--- isPrefixOf :: Eq a => [a] -> [a] -> Bool
+-- resuelto
+--
+take' :: Int -> [a] -> [a]
+
+-- take' n [] = []
+-- take' n (x:xs) = if n /= 0
+--                  then x : take' (n-1) xs
+--                  else take' (n-1) []
+
+take' n xs = foldr takeN (\ _ -> []) xs n
+                    where takeN x r 0 = []
+                          takeN x r n = x : r (n-1)
+-- resuelto
+--
+drop' :: Int -> [a] -> [a]
+
+-- drop' n [] = []
+-- drop' 0 xs = xs
+-- drop' n (x:xs) = drop' (n - 1) xs
+
+drop' n xs = recr dropN (\ _ -> []) xs n
+             where dropN x xs r 0 = x:xs
+                   dropN x xs r n = r (n - 1)
+
+-- resuelto
+--
+zip' :: [a] -> [b] -> [(a,b)]
+zip' xs ys = foldr zipList (\_ -> []) xs ys
+             where zipList x r [] = []
+                   zipList x r (y:ys) = (x,y):(r ys)
+
+--resuelto
+--
+splitAt' :: Int -> [a] -> ([a], [a])
+
+splitAt' n xs = recr g (\_ -> ([], [])) xs n
+   where g x xs r 0 = ([], xs)
+         g x xs r n =
+               let (ys, zs) = r (n-1)
+                   in (x:ys, zs)
+-- resuelto
+maximum', minimum' :: Ord a => [a] -> a
+
+maximum' xs = recr findMaximum (error "La lista es vacia") xs
+                   where findMaximum x [] r = x
+                         findMaximum x xs r = (max x r)
+
+minimum' xs = recr findMinimum (error "La lista es vacia") xs
+                  where findMinimum x [] r = x
+                        findMinimum x xs r = (min x r)
+
+--
+unzip' :: [(a,b)] -> ([a],[b])
+unzip' xs = foldr unzipList ([], []) xs
+                  where unzipList x r = let (ys, zs) = r in ((fst x):ys , (snd x):zs)
+--
+tails' :: [a] -> [[a]]
+-- tails' [] = []
+-- tails' [x] = [[x]]
+-- tails' (x:xs) = let ys = tails' xs
+--                          in (x:xs):ys
+
+tails' xs = recr (\ x xs r -> (x:xs):r) [[]] xs
+
+--
+nub' :: (Eq a) => [a] -> [a]
+-- nub' [] = []
+-- nub' (x:xs) = let ys = nub' xs
+--                        in if elem x ys
+--                           then ys
+--                           else x:ys
+
+nub' xs = foldr nub'' [] xs
+            where nub'' x r = let ys = r
+                              in if elem x ys
+                                 then ys
+                                 else (x:ys)
+
+
+--
+isPrefixOf :: Eq a => [a] -> [a] -> Bool
+-- isPrefixOf [] ys = True
+-- isPrefixOf (x:xs) [] = False
+-- isPrefixOf (x:xs) (y:ys) =
+--  x == y && isPrefixOf xs ys
+isPrefixOf xs ys = foldr prefixes (\ _ -> True) xs ys
+                        where prefixes x r [] = False
+                              prefixes x r (y:ys) = x == y && r ys
+
+--
+-- es re fumada esta funcion, la salteo
 -- elemIndex :: Eq a => a -> [a] -> Maybe Int
--- group :: Eq a => [a] -> [[a]]
+-- elemIndex x [] = Nothing
+-- elemIndex x (y:ys) = elemIndex x ys
+--                                 if x == y
+--                                 then Just (length acum)
+--                                 else x:acum
+
+
+-- group :: Eq a => [a] -> [[a]]              resuelto (agrupar?)
 -- delete :: Eq a => a -> [a] -> [a]
 -- map :: (a -> b) -> [a] -> [b]
 -- filter :: (a -> Bool) -> [a] -> [a]
