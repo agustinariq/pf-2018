@@ -459,14 +459,52 @@ isPrefixOf xs ys = foldr prefixes (\ _ -> True) xs ys
 --                                 else x:acum
 
 
+-- idem arriba
 -- group :: Eq a => [a] -> [[a]]              resuelto (agrupar?)
--- delete :: Eq a => a -> [a] -> [a]
--- map :: (a -> b) -> [a] -> [b]
--- filter :: (a -> Bool) -> [a] -> [a]
--- any, all :: (a -> Bool) -> [a] -> Bool
--- find :: (a -> Bool) -> [a] -> Maybe a
+--
+delete' :: Eq a => a -> [a] -> [a]
+delete' x ys = recr deleteFirst (\ _ -> []) ys x
+                   where deleteFirst y ys r x = if y == x
+                                                then ys
+                                                else y:r x
+
+mapfold :: (a -> b) -> [a] -> [b]
+--map' f [] = []
+--map' f (x:xs) = f x : map' f xs
+
+mapfold f xs = foldr (\ x r -> f x : r) [] xs
+
+--
+filterfold :: (a -> Bool) -> [a] -> [a]
+-- filterfold f [] = []
+-- filterfold f (x:xs) = if f x
+--                       then x : filterfold f xs
+--                       else filterfold f xs
+filterfold f xs = foldr filterf [] xs
+                         where filterf x r = if f x
+                                               then x : r
+                                               else r
+
+--
+anyf, allf :: (a -> Bool) -> [a] -> Bool
+anyf f xs = foldr (\ x r -> f x || r) False xs
+
+allf f xs = foldr (\ x r -> f x && r) True xs
+
+--
+findf :: (a -> Bool) -> [a] -> Maybe a
+findf f xs = foldr findfold Nothing xs
+                   where findfold x r = if f x
+                                        then Just x
+                                        else r
+
+-- ni idea que hace (o si pero no quiero buscar)
 -- countBy :: (a -> Bool) -> [a] -> Int
 -- partition :: (a -> Bool) -> [a] -> ([a], [a])
 -- concatMap :: (a -> [b]) -> [a] -> [b]
 -- takeWhile :: (a -> Bool) -> [a] -> [a]
 -- zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+
+recu 1 1 n = "pos3"
+recu 1 n 1 = "med"
+recu n 1 1 = "pos1"
